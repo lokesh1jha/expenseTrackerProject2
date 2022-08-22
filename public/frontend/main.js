@@ -18,7 +18,7 @@ function registerUser(e) {
     console.log(User);
     axios.post('http://localhost:3000/signup', User)
         .then(res => {
-            if(res.status === 200){
+            if(res.status === 201){
                 console.log("User Registered")
             }else {
                 console.log("User Registration failed")
@@ -26,7 +26,8 @@ function registerUser(e) {
             }
         })
         .catch(err => {
-            console.log("error" + err.messsage);
+            alert("Your Email Id is already registerd.")
+            console.log("error " + err);
         })
     
     document.getElementById('signupForm').reset();

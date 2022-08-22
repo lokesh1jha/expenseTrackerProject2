@@ -4,7 +4,7 @@ const body_parser = require('body-parser')
 const path = require('path')
 const cors = require('cors')
 
-//const sequelize = require('./controllers/error')
+const sequelize = require('./util/database');
 
 const app = express()
 
@@ -24,6 +24,7 @@ const publicRoutes = require('./routes/expense')
 app.use(body_parser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//login
 // app.use((req, res, next) => {
 //     User.findByPk(1)
 //         .then(user => {
@@ -40,4 +41,14 @@ app.use(publicRoutes);
 
 // .belongsTo(User, {})
 
-app.listen(3000);
+sequelize
+//   .sync({ force: true })
+  .sync()
+  .then(result => {
+    // return User.findByPk(1);
+    // console.log(result);
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });

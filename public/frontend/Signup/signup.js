@@ -1,6 +1,7 @@
 
 document.getElementById('signupForm').addEventListener('submit', registerUser);
 
+
 function registerUser(e) {
     e.preventDefault();
 
@@ -16,13 +17,13 @@ function registerUser(e) {
         password
     }
     console.log(User);
-    axios.post('http://localhost:3000/signup', User)
+    axios.post('http://localhost:3000/user/signup', User)
         .then(res => {
             if(res.status === 201){
-                console.log("User Registered")
+                alert("Successfuly signed up")
             }else {
                 console.log("User Registration failed")
-                throw new Error(response.data.messsage);
+                throw new Error(res.data.messsage);
             }
         })
         .catch(err => {
@@ -33,3 +34,5 @@ function registerUser(e) {
     document.getElementById('signupForm').reset();
 
 }
+
+

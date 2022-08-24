@@ -44,7 +44,7 @@ exports.loginUser = (req, res, next) => {
                 if (response) {
                     console.log(JSON.stringify(user))
                     const jwttoken = generateAccessToken(user[0].id);
-                    res.json({ token: jwttoken, success: true, message: 'Successfully Logged In' })
+                    return res.status(200).json({ token: jwttoken, success: true, message: 'Successfully Logged In' })
                     // Send JWT
                 } else {
                     // response is OutgoingMessage object that server response http request
@@ -56,35 +56,5 @@ exports.loginUser = (req, res, next) => {
         }
     })
 }
-const authenticate = (req, res, next) => {
-    try {
-        const tocken = req.header('authorization');
-        console.log('tocken : ' + tocken);
-        const userid = Number(jwt.verify(tocken, process.env.TOCKEN_SECRET));
-        User.findByPk(userid).then(user => {
-            console.log(JSON.stringify(user));
-            req.user = user;
-            next();
-        })
-            .catch(err => { throw new Error(err) })
-    } catch (err) {
-        console.log(err);
-        return res.status(401).json({ success: false })
-    };
-}
 
-exports.addexpense = (req, res, next) => {
-    const { expenseamount, description, category } = req.body;
-    console.log(`req.user>>>>${JSON.stringify(req.user)}`);
-    req.user.createExpense({ expenseamount, description, category })
-        .then(expense => {
-            return res.status(201).json({ expense, success: true });
-        })
-        .catch(err => {
-            return res.status(402).json({ success: false, error: err });
-        })
-};
 
-exports.getexpense = (req, res, next) => {
-
-}

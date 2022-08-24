@@ -10,13 +10,14 @@ function loginUser(e) {
         email,
         password
     }
-    console.log(user)
+    
     axios.post('http://localhost:3000/user/login', user)
         .then(res => {
-            if(res.status === 200){
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('userDetails', JSON.stringify(response.data.user));
-                window.location.href = "../ExpenseTracker/index.html" // change the page on successful login
+            if(res.status == 200){
+                console.log(user)
+                localStorage.setItem('token', res.data.token);
+                localStorage.setItem('userDetails', JSON.stringify(res.data.user))
+                window.location.href = "../Expense/index.html"; // change the page on successful login                
             }else {
                 console.log("User Login failed");
                 throw new Error('Failed to login');

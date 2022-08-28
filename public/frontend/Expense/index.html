@@ -23,7 +23,61 @@
             text-align: left;
             padding: 8px;
         }
+
+        body {
+            height: 125vh;
+            margin-top: 80px;
+            padding: 30px;
+            background-size: cover;
+            font-family: sans-serif;
+        }
+
+        header {
+            background-color: rgb(210, 233, 184);
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 5px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 0 25px 0 black;
+        }
+
+        header * {
+            display: inline;
+        }
+
+        header li {
+            margin: 20px;
+        }
+
+        header li a {
+            color: blue;
+            text-decoration: none;
+        }
+
+        .display {
+            display: none;
+        }
+
+        /* Dark Mode for Premium user */
+        .dark {
+            background-color: #1f1f1fd4;
+            color: white;
+        }
     </style>
+
+    <header class="display" id="navbar">
+        <nav>
+            <ul>
+                <li>
+                    <a href="../Leaderboard/leaderboard.html"> Leaderboard </a>
+                </li>
+
+            </ul>
+        </nav>
+    </header>
 
 
     <h1>Expense Tracker</h1>
@@ -51,6 +105,11 @@
 
             </table>
         </div>
+        <br>
+        <br>
+        <button id="rzp-button1">Buy Premium</button>
+        <button onclick="download()" id="downloadexpense">Download File</button>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <script src="index.js"></script>
     </div>
 

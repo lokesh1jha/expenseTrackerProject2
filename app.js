@@ -9,9 +9,11 @@ const User = require('./models/user')
 const Expense = require('./models/expense')
 
 const userRoutes = require('./routes/expense');
+const purchaseRoutes = require('./routes/purchase');
 
 const app = express();
 const dotenv = require('dotenv');
+const Order = require('./models/orders');
 
 //get config vars
 dotenv.config();
@@ -24,10 +26,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/user', userRoutes);
+app.use('/purchase', purchaseRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
+User.hasMany(Order);
+Order.belongsTo(User)
 sequelize
 //   .sync({ force: true })
   .sync()

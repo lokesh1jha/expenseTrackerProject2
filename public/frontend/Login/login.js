@@ -1,3 +1,5 @@
+const URLTOBACKEND = 'http://localhost:3000/';
+
 document.getElementById('loginForm').addEventListener('submit', loginUser);
 
 function loginUser(e) {
@@ -11,12 +13,12 @@ function loginUser(e) {
         password
     }
     
-    axios.post('http://localhost:3000/user/login', user)
+    axios.post(`${URLTOBACKEND}user/login`, user)
         .then(res => {
             if(res.status == 200){
                 console.log(user)
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('userDetails', JSON.stringify(res.data.user))
+                localStorage.setItem('userDetails', JSON.stringify(res.data))
                 window.location.href = "../Expense/index.html"; // change the page on successful login                
             }else {
                 console.log("User Login failed");

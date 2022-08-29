@@ -10,6 +10,7 @@ const Expense = require('./models/expense')
 
 const userRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
+const forgotPassRoute = require('./routes/forgotPass')
 
 const app = express();
 const dotenv = require('dotenv');
@@ -27,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/user', userRoutes);
 app.use('/purchase', purchaseRoutes);
-
+app.use('/password', forgotPassRoute)
 User.hasMany(Expense);
 Expense.belongsTo(User);
 

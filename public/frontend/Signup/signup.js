@@ -1,3 +1,4 @@
+const URLTOBACKEND = 'http://localhost:3000/';
 
 document.getElementById('signupForm').addEventListener('submit', registerUser);
 
@@ -17,7 +18,7 @@ function registerUser(e) {
         password
     }
     console.log(User);
-    axios.post('http://localhost:3000/user/signup', User)
+    axios.post(`${URLTOBACKEND}user/signup`, User)
         .then(res => {
             if(res.status === 201){
                 alert("Successfuly signed up")

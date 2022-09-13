@@ -17,4 +17,6 @@ router.get('/getexpense',authenticatemiddleware.authenticate, expenseController.
 
 router.get('/leaderboard',authenticatemiddleware.authenticate, expenseController.leaderboard);
 
+router.get('/download',authenticatemiddleware.authenticate, expenseController.downloadExpense);
+
 module.exports = router;

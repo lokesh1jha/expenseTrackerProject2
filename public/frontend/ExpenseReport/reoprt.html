@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Report</title>
+    <link rel="stylesheet" href="report.css">
+</head>
+<body>
+    <h2>Monthly Expense</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Income</th>
+            <th>Expense</th>
+        </tr>
+
+        <tr>
+            <td>05-02-2022</td>
+            <td>PVR show</td>
+            <td>Movie</td>
+            <td></td>
+            <td>320</td>
+        </tr>
+
+        <tr>
+            <td>07-02-2022</td>
+            <td>Night out</td>
+            <td>Fun</td>
+            <td></td>
+            <td>820</td>
+        </tr>
+
+        <tr>
+            <td>08-02-2022</td>
+            <td>PVR stocks</td>
+            <td>Investment</td>
+            <td></td>
+            <td>1700</td>
+        </tr>
+
+        <tr>
+            <td>05-02-2022</td>
+            <td>Profit</td>
+            <td>Profit</td>
+            <td>4000</td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td><strong>Total</strong></td>
+            <td>4000</td>
+            <td>2840</td>
+        </tr>
+    </table>
+
+
+    <h2>Yearly Report</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Expense</th>
+            <th>Saving</th>
+        </tr>
+
+        <tr>
+            <td>Feb</td>
+            <td>4000</td>
+            <td>2840</td>
+            <td>1160</td>
+        </tr>
+
+        
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td><strong>Total</strong></td>
+            <td>1160</td>
+        </tr>
+    </table>
+    <br>
+    <button onclick="download()" id="downloadexpense" type="button" class="btn"><i class="fa fa-download"></i> Download Report</button>
+    <script src="report.js"></script>
+</body>
+</html>

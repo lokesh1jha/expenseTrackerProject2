@@ -1,6 +1,11 @@
 const express = require('express')
 const body_parser = require('body-parser')
 
+const morgan = require('morgan');
+const fs = require('fs')
+const helmet = require('helmet');
+const compression= require('compression');
+
 const path = require('path')
 const cors = require('cors')
 
@@ -20,6 +25,12 @@ const Order = require('./models/orders');
 //get config vars
 dotenv.config();
 
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', {stream: accessLogStream }));
 app.use(cors());
 
 

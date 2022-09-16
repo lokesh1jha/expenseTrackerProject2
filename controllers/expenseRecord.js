@@ -15,19 +15,58 @@ exports.addExpense = (req, res, next) => {
 
 exports.getExpense = (req, res, next) => {
     req.user.getExpenses().then(expense => {
+        expense = paginationResult(req, expense);
         return res.status(200).json({ expense, success: true })
     }).catch(err => {
         return res.status(402).json({ error: err, success: false })
     })
 }
 
+
+const paginationResult = function pagination(req, model) {
+    try {
+            const page = parseInt(req.query.page);
+            const limit = parseInt(req.query.limit);
+            const startIndex = (page - 1) * limit;
+            const endIndex = page * limit;
+
+            const result = {};
+
+            if (endIndex < model.length) {
+                result.next = {
+                    page: page + 1,
+                    limit: limit
+                }
+            }
+            if (startIndex > 0) {
+                result.previous = {
+                    page: page - 1,
+                    limit: limit
+                }
+            }
+
+            
+            result.lastPage = Math.floor((model.length - 1) / limit);
+
+            result.results = model.slice(startIndex, endIndex);
+
+            return result;
+    }
+    catch (err) {
+        console.log('err :' + err);
+    }
+}
+
+
+
 exports.deleteexpense = (req, res) => {
-    const expenseid = req.params.expenseid;
+    const expenseid = parseInt(req.query.id);
+    console.log(expenseid + "expeseid")
     Expense.destroy({ where: { id: expenseid } }).then(() => {
         return res.status(204).json({ success: true, message: "Deleted Successfuly" })
     }).catch(err => {
         console.log(err);
-        return res.status(403).json({ success: true, message: "Failed" })
+        return res.status(403).json({ success: true, message: "Failed to Delete" })
     })
 }
 
@@ -63,7 +102,7 @@ function uploadTOS3(data, filename) {
             Body: data,
             ACL: 'public-read'
         }
-        return new Promise((resolve, reject)=> {
+        return new Promise((resolve, reject) => {
             s3bucket.upload(params, (err, s3response) => {
                 if (err) {
                     console.log('Something went wrong', err);
@@ -74,7 +113,7 @@ function uploadTOS3(data, filename) {
                 }
             })
         }
-    )
+        )
     })
 }
 
@@ -86,10 +125,19 @@ exports.downloadExpense = async (req, res, next) => {
         const id = req.user.id;
         const filename = `MyExpense${id}/${new Date()}.txt`;
         const fileURL = await uploadTOS3(stringifiedExpenses, filename);
-        console.log( "fileURL: " + fileURL);
+        console.log("fileURL: " + fileURL);
         return res.status(200).json({ success: true, fileURL });
+        // uploadTOS3(stringifiedExpenses, filename)
+        // .then((fileURL) => {
+        //     console.log( "fileURL: " + fileURL);
+        //     return res.status(200).json({ success: true, fileURL });
+        // }).catch(err => {
+        //     console.log("Exception", err);
+        //     return res.status(500).json({ success: false, fileURL: "", err:err});
+        // })
+
     } catch (err) {
         console.log("Exception", err);
-        return res.status(500).json({ success: false, fileURL: "", err:err});
+        return res.status(500).json({ success: false, fileURL: "", err: err });
     }
 }

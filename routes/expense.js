@@ -19,4 +19,6 @@ router.get('/leaderboard',authenticatemiddleware.authenticate, expenseController
 
 router.get('/download',authenticatemiddleware.authenticate, expenseController.downloadExpense);
 
+router.delete('/deleteexpense',authenticatemiddleware.authenticate, expenseController.deleteexpense);
+
 module.exports = router;

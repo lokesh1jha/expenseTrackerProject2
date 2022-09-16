@@ -12,6 +12,7 @@
 <body>
 
     <style>
+       
         table {
             border-collapse: collapse;
             width: 100%;
@@ -19,7 +20,7 @@
 
         td,
         th {
-            border: 1px solid #000000;
+            
             text-align: left;
             padding: 8px;
         }
@@ -66,6 +67,32 @@
             background-color: #1f1f1fd4;
             color: white;
         }
+
+        
+        .pagination {
+            display: flex;
+            margin-left: 50%;
+        }
+
+        .paginate {
+            font-size: x-large;
+        }
+
+        .counter {
+            margin: 8.5px;   
+        }
+
+        .setlimit {
+            margin-left: 50%;
+        }
+
+        select {
+            font-size: unset;
+            width: 80px;
+            margin-top: 20px;
+            color: white;
+            background-color: gray;
+        }
     </style>
 
     <header class="display" id="navbar">
@@ -106,7 +133,26 @@
             </table>
         </div>
         <br>
-        <br>
+
+        
+        
+        <div id="pagination" class="pagination">
+            <!-- page button -->
+            <button id="prevPage">Prev</button>
+            <button id="currPage" style="background-color: bisque;">1</button>
+            <button id="nextPage">Next</button>
+        </div>
+
+        <div class="setlimit">
+            <select name="limit" id="setlimit">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <br> <br>
         <button id="rzp-button1">Buy Premium</button>
         <button onclick="download()" id="downloadexpense">Download File</button>
     </div>

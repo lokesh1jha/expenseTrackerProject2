@@ -2,13 +2,6 @@ const URLTOBACKEND = 'http://localhost:3000/';
 const EMAILID = 'ceolokeshjha@gmail.com'
 const PHONENO = 9768523325
 const tableBody = document.querySelector('.table');
-tableBody.innerHTML += ` <tr>
-        <th>Amount</th>
-        <th>Description</th>
-        <th>Category</th>
-        <th>Edit</th>
-        <th>Delete</th>
-        </tr>`;
 
 const token = localStorage.getItem('token');
 function addNewExpense(e) {
@@ -41,39 +34,139 @@ window.addEventListener('load', () => {
         header.classList.remove('display');
         document.body.classList.add("dark");
     }
+    if(localStorage.getItem('pagelimit')){
+        document.getElementById('setlimit').innerHTML = localStorage.getItem('pagelimit');
+    }
+    tableBody.innerHTML += ` <tr>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Delete</th>
+        </tr>`;
 
-    axios.get(`${URLTOBACKEND}user/getexpense`, { headers: { "Authorization": token } }).then(response => {
+    getExpenses(1,5);
+});
 
+
+
+
+
+//Pagination 
+
+const prev = document.getElementById('prevPage')
+const curr = document.getElementById('currPage')
+const next = document.getElementById('nextPage')
+
+let totalpages;
+let ITEM_PER_PAGE = document.getElementById('setlimit').value;
+let prevPageNumber;
+let currPageNumber;
+let nextPageNumber;
+
+// function calculatePage (moveto) {
+//     currPageNumber = parseInt(curr.innerHTML);
+    
+//     ITEM_PER_PAGE = document.getElementById('setlimit').value;
+
+//     if(moveto == 'back'){
+//         if(currPageNumber !== 1){
+//             currPageNumber--;
+//             curr.innerHTML = currPageNumber;
+//             getExpenses(currPageNumber, ITEM_PER_PAGE);
+//         }
+//     }else {
+//         if(currPageNumber < totalpages){
+//             currPageNumber++;
+//             curr.innerHTML = currPageNumber;
+//             getExpenses(currPageNumber, ITEM_PER_PAGE);
+//         }
+//     }
+    
+// }
+
+//prev
+prev.addEventListener('click', () => {
+    console.log("back clicked");
+    currPageNumber = parseInt(curr.innerHTML);
+    
+    ITEM_PER_PAGE = document.getElementById('setlimit').value;
+    
+    if(currPageNumber !== 1){
+        currPageNumber--;
+        curr.innerHTML = currPageNumber;
+        getExpenses(currPageNumber, ITEM_PER_PAGE);
+    }
+    // calculatePage("back");
+});
+
+
+
+//next
+next.addEventListener('click', ()=> {
+    console.log("next clicked");
+    currPageNumber = parseInt(curr.innerHTML);
+    
+    ITEM_PER_PAGE = document.getElementById('setlimit').value;
+
+    if(currPageNumber < totalpages){
+        currPageNumber++;
+        curr.innerHTML = currPageNumber;
+        getExpenses(currPageNumber, ITEM_PER_PAGE);
+    }
+    // calculatePage("next");
+});
+
+
+
+
+//Pagination END
+
+
+function getExpenses(page = 1, limit = 5) {
+    axios.get(`${URLTOBACKEND}user/getexpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } }).then(response => {
+        
         if (response.status == 200) {
-            response.data.expense.forEach(expense => {
-                addNewExpensetoUI(expense);
+            console.log(response);
+            response.data.expense.results.forEach(expense => {
+                console.log(expense);
+                // totalpages = expense.lastPage;
+                addExpensetoUI(expense);
             })
         } else {
             throw new Error();
         }
     })
-});
+}
 
+function addExpensetoUI(element) {
+    
+    tableBody.innerHTML += `
+        <tr id="expense-${element.id}">
+        <td class="amount">${element.expenseamount}</td>
+        <td class="description">${element.description}</td>
+        <td class="category">${element.category}</td>
+        <td><button style="cursor: pointer;background-color: red;border: none;" onclick='deleteExpense(event, ${element.id})'>Delete</button></td>
+        </tr>`;
+}
 
 
 function addNewExpensetoUI(element) {
     tableBody.innerHTML += `
-        <tr data-id="${element._id}">
+        <tr id="expense-${element.id}">
         <td class="amount">${element.expenseamount}</td>
         <td class="description">${element.description}</td>
         <td class="category">${element.category}</td>
-        <td><a class="EditButton" id="edit-exp">Edit</td>
-        <td><a class="DeleteButton" id="delete-exp">Delete</td>
+        <td><button style="cursor: pointer;background-color: red;border: none;" onclick='deleteExpense(event, ${element.id})'>Delete</button></td>
         </tr>`;
 }
 
 document.getElementById('rzp-button1').onclick = async function (e) {
     const response = await axios.get(`${URLTOBACKEND}purchase/premiummembership`, { headers: { "Authorization": token } });
-    console.log(response);
+    
     var options = {
-        "key": response.data.key_id,
+        "key": response.data.keyid,
         "name": "Lokesh Kumar Jha",
-        "order_id": response.data.order.id,
+        "orderid": response.data.order.id,
         "prefill": {
             "name": "Lokesh Kumar Jha",
             "email": `${EMAILID}`,
@@ -85,9 +178,9 @@ document.getElementById('rzp-button1').onclick = async function (e) {
         //This handler function will handle the success payment
         "handler": function (response) {
             console.log(response);
-            axios.post(`${process.env.URL}purchase/updatetransactionstatus`, {
-                order_id: options.order_id,
-                payment_id: response.razorpay_payment_id,
+            axios.post(`${URLTOBACKEND}purchase/updatetransactionstatus`, {
+                orderid: options.orderid,
+                paymentid: response.razorpay_paymentid,
             }, { headers: { "Authorization": token } }).then(() => {
                 alert('You are a Premium User Now')
             }).catch(() => {
@@ -108,8 +201,8 @@ document.getElementById('rzp-button1').onclick = async function (e) {
         alert(response.error.source);
         alert(response.error.step);
         alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
+        alert(response.error.metadata.orderid);
+        alert(response.error.metadata.paymentid);
     });
 
 };
@@ -118,7 +211,8 @@ document.getElementById('rzp-button1').onclick = async function (e) {
 
 
 function deleteExpense(e, expenseid) {
-    axios.delete(`${process.env.URL}user/deleteexpense/${expenseid}`, { headers: { "Authorization": token } })
+    e.preventDefault();
+    axios.delete(`${URLTOBACKEND}user/deleteexpense?id=${expenseid}`, { headers: { "Authorization": token } })
         .then((response) => {
 
             if (response.status === 204) {

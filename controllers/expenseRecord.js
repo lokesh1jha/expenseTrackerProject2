@@ -85,7 +85,7 @@ exports.leaderboard = (req, res, next) => {
 
 }
 
-function uploadTOS3(data, filename) {
+async function uploadTOS3(data, filename) {
     const BUCKET_NAME = process.env.BUCKET_NAME;
     const IAM_USER_KEY = process.env.IAM_USER_KEY;
     const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
@@ -95,26 +95,29 @@ function uploadTOS3(data, filename) {
         secretAccessKey: IAM_USER_SECRET
     })
 
-    s3bucket.createBucket(() => {
+    // s3bucket.createBucket(() => {
         var params = {
             Bucket: BUCKET_NAME,
             Key: filename,
             Body: data,
             ACL: 'public-read'
         }
-        return new Promise((resolve, reject) => {
-            s3bucket.upload(params, (err, s3response) => {
-                if (err) {
-                    console.log('Something went wrong', err);
-                    reject(err);
-                } else {
-                    console.log('sucess', s3response);
-                    resolve(s3response.Location);
-                }
-            })
+        // return new Promise((resolve, reject) => {
+        //     s3bucket.upload(params, (err, s3response) => {
+        //         if (err) {
+        //             console.log('Something went wrong', err);
+        //             reject(err);
+        //         } else {
+        //             console.log('sucess', s3response);
+        //             resolve(s3response.Location);
+        //         }
+        //     })
+        // }
+        const s3response = await s3bucket.upload(params).promise();
+        if(s3response) { 
+            return s3response.Location;
         }
-        )
-    })
+       
 }
 
 exports.downloadExpense = async (req, res, next) => {
@@ -125,17 +128,8 @@ exports.downloadExpense = async (req, res, next) => {
         const id = req.user.id;
         const filename = `MyExpense${id}/${new Date()}.txt`;
         const fileURL = await uploadTOS3(stringifiedExpenses, filename);
-        console.log("fileURL: " + fileURL);
-        return res.status(200).json({ success: true, fileURL });
-        // uploadTOS3(stringifiedExpenses, filename)
-        // .then((fileURL) => {
-        //     console.log( "fileURL: " + fileURL);
-        //     return res.status(200).json({ success: true, fileURL });
-        // }).catch(err => {
-        //     console.log("Exception", err);
-        //     return res.status(500).json({ success: false, fileURL: "", err:err});
-        // })
-
+        // console.log("fileURL: " + fileURL);
+        return res.status(201).json({ success: true, fileURL });
     } catch (err) {
         console.log("Exception", err);
         return res.status(500).json({ success: false, fileURL: "", err: err });

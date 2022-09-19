@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const fs = require('fs')
 const helmet = require('helmet');
 const compression= require('compression');
-
+const https = require('https')
 const path = require('path')
 const cors = require('cors')
 
@@ -25,6 +25,8 @@ const Order = require('./models/orders');
 //get config vars
 dotenv.config();
 
+// const privatekey = fs.readFileSync('server.key');
+// const certificate = fs.readFileSync('server.cert');
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 
@@ -57,6 +59,8 @@ sequelize
   .sync()
   .then(result => {
     app.listen(3000);
+    //OPENSSL certificate to be used by
+    // https.createServer({key: privatekey, cert: certificate}, app).listen(process.env.PORT || 3000);
   })
   .catch(err => {
     console.log(err);

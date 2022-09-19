@@ -34,21 +34,12 @@ window.addEventListener('load', () => {
         header.classList.remove('display');
         document.body.classList.add("dark");
     }
-    if(localStorage.getItem('pagelimit')){
+    if (localStorage.getItem('pagelimit')) {
         document.getElementById('setlimit').innerHTML = localStorage.getItem('pagelimit');
     }
-    tableBody.innerHTML += ` <tr>
-        <th>Amount</th>
-        <th>Description</th>
-        <th>Category</th>
-        <th>Delete</th>
-        </tr>`;
 
-    getExpenses(1,5);
+    getExpenses(1, 5);
 });
-
-
-
 
 
 //Pagination 
@@ -58,77 +49,57 @@ const curr = document.getElementById('currPage')
 const next = document.getElementById('nextPage')
 
 let totalpages;
-let ITEM_PER_PAGE = document.getElementById('setlimit').value;
+let ITEM_PER_PAGE = parseInt(document.getElementById('setlimit').value);
 let prevPageNumber;
 let currPageNumber;
 let nextPageNumber;
 
-// function calculatePage (moveto) {
-//     currPageNumber = parseInt(curr.innerHTML);
-    
-//     ITEM_PER_PAGE = document.getElementById('setlimit').value;
-
-//     if(moveto == 'back'){
-//         if(currPageNumber !== 1){
-//             currPageNumber--;
-//             curr.innerHTML = currPageNumber;
-//             getExpenses(currPageNumber, ITEM_PER_PAGE);
-//         }
-//     }else {
-//         if(currPageNumber < totalpages){
-//             currPageNumber++;
-//             curr.innerHTML = currPageNumber;
-//             getExpenses(currPageNumber, ITEM_PER_PAGE);
-//         }
-//     }
-    
-// }
 
 //prev
 prev.addEventListener('click', () => {
     console.log("back clicked");
     currPageNumber = parseInt(curr.innerHTML);
-    
+
     ITEM_PER_PAGE = document.getElementById('setlimit').value;
-    
-    if(currPageNumber !== 1){
+
+    if (currPageNumber !== 1) {
         currPageNumber--;
         curr.innerHTML = currPageNumber;
         getExpenses(currPageNumber, ITEM_PER_PAGE);
     }
-    // calculatePage("back");
 });
 
 
 
 //next
-next.addEventListener('click', ()=> {
+next.addEventListener('click', () => {
     console.log("next clicked");
     currPageNumber = parseInt(curr.innerHTML);
-    
+
     ITEM_PER_PAGE = document.getElementById('setlimit').value;
 
-    if(currPageNumber < totalpages){
-        currPageNumber++;
-        curr.innerHTML = currPageNumber;
-        getExpenses(currPageNumber, ITEM_PER_PAGE);
-    }
-    // calculatePage("next");
+    // if (currPageNumber < totalpages) {
+    currPageNumber++;
+    curr.innerHTML = currPageNumber;
+    getExpenses(currPageNumber, ITEM_PER_PAGE);
+    // }
 });
-
-
-
 
 //Pagination END
 
 
 function getExpenses(page = 1, limit = 5) {
-    axios.get(`${URLTOBACKEND}user/getexpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } }).then(response => {
-        
+    tableBody.innerHTML = ` <tr>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Delete</th>
+        </tr>`;
+
+    axios.get(`${URLTOBACKEND}user/getexpense?page=${page}&limit=${limit}`, { headers: { "Authorization": token } })
+    .then(response => {    
         if (response.status == 200) {
-            console.log(response);
             response.data.expense.results.forEach(expense => {
-                console.log(expense);
                 // totalpages = expense.lastPage;
                 addExpensetoUI(expense);
             })
@@ -139,7 +110,7 @@ function getExpenses(page = 1, limit = 5) {
 }
 
 function addExpensetoUI(element) {
-    
+
     tableBody.innerHTML += `
         <tr id="expense-${element.id}">
         <td class="amount">${element.expenseamount}</td>
@@ -162,7 +133,7 @@ function addNewExpensetoUI(element) {
 
 document.getElementById('rzp-button1').onclick = async function (e) {
     const response = await axios.get(`${URLTOBACKEND}purchase/premiummembership`, { headers: { "Authorization": token } });
-    
+
     var options = {
         "key": response.data.keyid,
         "name": "Lokesh Kumar Jha",
@@ -237,11 +208,12 @@ function removeExpensefromUI(expenseid) {
 function download() {
     axios.get(`${URLTOBACKEND}user/download`, { headers: { "Authorization": token } })
         .then((response) => {
+            console.log(response.status + "" + response.data.fileURL);
             if (response.status === 201) {
                 //the backend is essentially sending a download link
                 //  which if we open in browser, the file would download
                 var a = document.createElement("a");
-                a.href = response.data.fileUrl;
+                a.href = response.data.fileURL;
                 a.download = 'myexpense.csv';
                 a.click();
             } else {
